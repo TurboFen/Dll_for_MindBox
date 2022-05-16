@@ -1,3 +1,5 @@
+# Комментарии по коду
+
 Руководство по использованию
 Файл TestLibrary представляет собой библиотеку, а файл TestingLibrary - unit-тесты. Библиотека написана как консольное приложение на платформе .Net Core 3.1
 Обьяснение реализации:
@@ -6,14 +8,16 @@
 # Создание базы данных
 Первым делом создадим базу данных которую назовем STORE
 Команда для ее выполнения: 
-'''
+
+```
 CREATE DATABASE STORE;
-'''
+```
 
 ## Далее нужно создать таблицы, для этого я сделал 2 варианта
 ### Вариант 1, создание 2 таблиц
 Первым делом были созданы две таблицы - Продуктов и Категорий и соединены ключом (CategoryId):
-'''
+
+```
 USE STORE
 
 CREATE TABLE Goods(
@@ -36,15 +40,19 @@ FOREIGN KEY(Category)
 REFERENCES Categories (CategoryId)
 ON DELETE SET DEFAULT
 ON UPDATE NO ACTION;
-'''
+```
+
 Далее эти таблицы были заполнены значениями:
 #### Заполнение таблицы категорий
-'''
+
+```
 use STORE
 insert into Categories values ('Фрукт'), ('Овощ'), ('Ягода'), ('Молочный продукт'), ('Мясной продукт');
-'''
+```
+
 #### Заполнение таблицы продуктов
-'''
+
+```
 use STORE
 
 insert into Goods values 
@@ -55,4 +63,14 @@ insert into Goods values
 insert into Goods values
 (NULL,'Банан')
 select * from Goods;
-'''
+```
+
+**После чего был написано соответсвующий запрос:**
+
+```
+use STORE
+
+select ProductName, CategoryName from Goods as g
+left join Categories as c on g.Category=c.CategoryID;
+```
+
