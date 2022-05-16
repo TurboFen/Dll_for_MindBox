@@ -74,3 +74,68 @@ select ProductName, CategoryName from Goods as g
 left join Categories as c on g.Category=c.CategoryID;
 ```
 
+**Результат:**
+
+![](https://github.com/TurboFen/Dll_for_MindBox/blob/main/src/result.png)
+
+### Вариант 2, Создание промежуточной таблицы 
+Данный вариант очень похож на вариант 1, однако тут создается 3-я таблица которая будет связывать ID двух других таблиц
+и не будет перегружать их в случае масштабирования таблиц
+
+#### Создание таблиц 
+
+```
+use STORE
+
+CREATE TABLE Goods(
+ProductId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_ProductId PRIMARY KEY,
+ProductName VARCHAR(100) NOT NULL
+);
+
+GO
+
+CREATE TABLE Categories(
+CategoryId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_CategoryId PRIMARY KEY,
+CategoryName VARCHAR(100) NOT NULL
+);
+
+GO 
+
+CREATE TABLE ID(
+CategoryId INT,
+ProductId INT,
+foreign key (ProductId) references Goods(ProductId) ON DELETE SET NULL,
+foreign key (CategoryId) references Categories(CategoryId) ON DELETE SET NULL,
+);
+```
+
+#### Заполнение таблиц
+**Заполнение категорий аналогично**
+**Заполнение продуктов:**
+
+```
+insert into Goods values 
+('Яблоко'),('Груша'),('Помидор'),
+('Арбуз'),('Персик'),('Моловка'),('Сливки'),
+('Свинина'),('Курица'),('Огурец'),('Сыр'),('Банан')
+select * from Goods;
+```
+
+**Заполнение таблицы ID:**
+
+```
+insert into ID values 
+(1,1),(1,2),(2,3),(3,4),(1,5),(4,6),(4,7),
+(5,8),(5,9),(2,10),(4,11),(NULL,12);
+select * from ID;
+```
+
+**Запрос:**
+
+```
+select ProductName, CategoryName from 
+Goods inner join ID on Goods.ProductId=ID.ProductId
+left join Categories as Categories on ID.CategoryId=Categories.CategoryId;
+```
+
+**Ответ Аналогичен ответу Варианта 1**
